@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tienda de Productos de Limpieza</title>
+  <style>
+    :root{
+      --bg:#f6f9fb;
+      --card:#ffffff;
+      --primary:#0ea5a4;
+      --accent:#06b6d4;
+      --muted:#6b7280;
+      --shadow: 0 6px 20px rgba(7,22,33,0.08);
+      --glass: rgba(255,255,255,0.6);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,var(--bg),#eaf6f6);color:#042029}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:transparent}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px}
+    h1{margin:0;font-size:18px}
+    .search{display:flex;gap:8px;align-items:center}
+    .search input{padding:10px 14px;border-radius:12px;border:1px solid #d1e8e8;min-width:200px}
+    .cart-btn{background:var(--primary);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;display:flex;gap:8px;align-items:center}
+
+    .hero{display:flex;gap:20px;align-items:center;padding:28px;max-width:1200px;margin:0 auto}
+    .hero .left{flex:1}
+    .hero h2{font-size:28px;margin:0 0 8px}
+    .hero p{color:var(--muted);margin:0 0 14px}
+    .hero .cta{background:var(--accent);color:white;padding:12px 16px;border-radius:10px;border:0;cursor:pointer}
+    .hero .right{flex:1;display:flex;justify-content:center}
+    .hero .mock{width:320px;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;background:linear-gradient(180deg,#fff,#f2feff);padding:18px}
+    .tags{display:flex;gap:10px;margin-top:12px}
+    .tag{background:#e8fbfb;padding:8px 10px;border-radius:999px;color:#03514e;font-weight:600;font-size:13px}
+
+    main{max-width:1200px;margin:20px auto;padding:0 18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+    .card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);transition:transform .18s ease;padding-bottom:10px}
+    .card:hover{transform:translateY(-6px)}
+    .card img{width:100%;height:170px;object-fit:cover}
+    .card .info{padding:12px}
+    .card h3{margin:0;font-size:16px}
+    .price-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .price{font-weight:700}
+    .old{color:var(--muted);text-decoration:line-through;font-size:13px}
+    .add{background:var(--primary);color:white;padding:8px 10px;border-radius:10px;border:0;cursor:pointer}
+
+    .floating-cart{position:fixed;right:20px;bottom:20px;background:linear-gradient(180deg,var(--primary),var(--accent));color:white;padding:12px 14px;border-radius:12px;box-shadow:0 10px 30px rgba(6,53,58,0.2);cursor:pointer;display:flex;gap:10px;align-items:center}
+
+    /* Cart drawer */
+    .drawer{position:fixed;right:0;top:0;height:100vh;width:380px;background:linear-gradient(180deg,#ffffff, #f7ffff);box-shadow:-20px 0 40px rgba(3,30,33,0.08);transform:translateX(110%);transition:transform .28s ease;padding:18px;overflow:auto}
+    .drawer.open{transform:translateX(0)}
+    .drawer h3{margin:0 0 8px}
+    .cart-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px dashed #e6f6f6}
+    .cart-item img{width:64px;height:64px;object-fit:cover;border-radius:8px}
+    .qty{display:flex;gap:6px;align-items:center}
+    .qty button{padding:6px 8px;border-radius:8px;border:1px solid #e2f3f3;background:white;cursor:pointer}
+    .checkout{background:var(--accent);color:white;padding:12px;border-radius:10px;border:0;width:100%;font-weight:700;margin-top:12px}
+
+    footer{max-width:1200px;margin:28px auto;padding:18px;text-align:center;color:var(--muted)}
+
+    @media (max-width:720px){
+      .hero{flex-direction:column}
+      .drawer{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">TL</div>
+      <div>
+        <h1>Tienda Limpia</h1>
+        <small style="color:var(--muted)">Productos de limpieza — envío a todo el país</small>
+      </div>
+    </div>
+    <div class="search">
+      <input id="search" placeholder="Buscar producto, ej: lavandina" />
+      <button class="cart-btn" id="openCartBtn">Ver carrito (0)</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="left">
+      <h2>Hacé tu casa relucir — productos confiables y económicos</h2>
+      <p>Seleccionamos lo mejor en limpiadores, desinfectantes y accesorios — delivery rápido y pago seguro.</p>
+      <div class="tags">
+        <div class="tag">Envío rápido</div>
+        <div class="tag">Promos semanales</div>
+        <div class="tag">Pago en efectivo/Tarjeta</div>
+      </div>
+      <div style="margin-top:14px">
+        <button class="cta" id="promoBtn">Ver promociones</button>
+      </div>
+    </div>
+    <div class="right">
+      <div class="mock">
+        <img src="https://images.unsplash.com/photo-1581579181999-9f3c9f3d2a0b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1b3f9f2c9b8b0f2a" style="width:100%;height:160px;object-fit:cover;border-radius:12px" alt="promo">
+        <div style="padding:10px">
+          <strong>Pack limpieza express</strong>
+          <p style="margin:6px 0;color:var(--muted)">Ahorrá 20% comprando el pack con lavandina, desinfectante y microfibra.</p>
+          <div style="display:flex;gap:8px">
+            <button class="add" onclick="addToCartById('p1')">Agregar</button>
+            <button class="add" style="background:#fff;color:var(--primary);border:1px solid #cceeee" onclick="openCart()">Ver carrito</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <h2 style="margin:8px 0 12px">Productos</h2>
+    <div style="margin-bottom:12px;color:var(--muted)">Filtrá por nombre o categoría — las fotos son ilustrativas.</div>
+
+    <div class="grid" id="productsGrid"></div>
+  </main>
+
+  <div class="floating-cart" id="floatingCart" onclick="openCart()">
+    <div style="font-weight:700">🛒 Carrito</div>
+    <div id="floatingTotal">$0</div>
+  </div>
+
+  <aside class="drawer" id="cartDrawer">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3>Tu carrito</h3>
+      <button onclick="closeCart()" style="background:transparent;border:0;font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <div id="cartList" style="margin-top:10px"></div>
+    <div style="margin-top:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="color:var(--muted)">Subtotal</div>
+        <div id="subtotal" style="font-weight:800">$0</div>
+      </div>
+      <button class="checkout" id="checkoutBtn">Pagar ahora</button>
+    </div>
+  </aside>
+
+  <footer>
+    Diseñado por Tienda Limpia • Contacto: tienda@limpia.example
+  </footer>
+
+  <script>
+    // Datos de ejemplo de productos
+    const products = [
+      {id:'p1',name:'Pack limpieza express',price:2200,oldPrice:2700,img:'https://images.unsplash.com/photo-1581579181999-9f3c9f3d2a0b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1b3f9f2c9b8b0f2a',cat:'packs'},
+      {id:'p2',name:'Lavandina 2L',price:650,img:'https://images.unsplash.com/photo-1601597117899-1f9c3b6f6a2a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4f8f8888c2b3ec3e',cat:'quimicos'},
+      {id:'p3',name:'Desinfectante 1L',price:780,img:'https://images.unsplash.com/photo-1612538393836-2d3013e5a3e9?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b9a7e4f617b8f1a',cat:'quimicos'},
+      {id:'p4',name:'Microfibra (pack x3)',price:540,img:'https://images.unsplash.com/photo-1583947580356-8e9a8b3f7c6a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=b6d7a2c9e9a7f2d1',cat:'accesorios'},
+      {id:'p5',name:'Escoba + Recogedor',price:1490,img:'https://images.unsplash.com/photo-1543269664-2b3b7b6911b2?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6b2f2f3d8c1d9f0a',cat:'accesorios'},
+      {id:'p6',name:'Limpiador multiusos 750ml',price:520,img:'https://images.unsplash.com/photo-1580910051070-9a3b6d8d4e8a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=5c3a6b4d7f8b1e2c',cat:'quimicos'}
+    ];
+
+    // Carrito en memoria
+    const cart = {};
+
+    const productsGrid = document.getElementById('productsGrid');
+    const cartBtn = document.getElementById('openCartBtn');
+    const cartList = document.getElementById('cartList');
+    const subtotalEl = document.getElementById('subtotal');
+    const floatingTotal = document.getElementById('floatingTotal');
+    const floatingCart = document.getElementById('floatingCart');
+
+    function formatPrice(v){return '$' + v.toLocaleString('es-AR')}
+
+    function renderProducts(filter=''){
+      productsGrid.innerHTML = '';
+      const q = filter.trim().toLowerCase();
+      const shown = products.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
+      shown.forEach(p => {
+        const card = document.createElement('div');card.className='card';
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.name}" />
+          <div class="info">
+            <h3>${p.name}</h3>
+            <div class="price-row">
+              <div>
+                <div class="price">${formatPrice(p.price)}</div>
+                ${p.oldPrice?`<div class="old">${formatPrice(p.oldPrice)}</div>`:''}
+              </div>
+              <div>
+                <button class="add" onclick="addToCartById('${p.id}')">Agregar</button>
+              </div>
+            </div>
+          </div>
+        `;
+        productsGrid.appendChild(card);
+      })
+    }
+
+    function updateCartUI(){
+      // update buttons and totals
+      const qty = Object.values(cart).reduce((s,i)=>s+i.qty,0);
+      const total = Object.values(cart).reduce((s,i)=>s + (i.price * i.qty),0);
+      cartBtn.innerText = `Ver carrito (${qty})`;
+      floatingTotal.innerText = formatPrice(total);
+      document.getElementById('openCartBtn').innerText = `Ver carrito (${qty})`;
+    }
+
+    function renderCart(){
+      cartList.innerHTML = '';
+      const keys = Object.keys(cart);
+      if(keys.length===0){
+        cartList.innerHTML = '<div style="color:var(--muted);padding:18px">Tu carrito está vacío. Agregá productos para empezar.</div>';
+        subtotalEl.innerText = formatPrice(0);
+        return;
+      }
+      keys.forEach(k=>{
+        const it = cart[k];
+        const div = document.createElement('div');div.className='cart-item';
+        div.innerHTML = `
+          <img src="${it.img}" alt="${it.name}" />
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong>${it.name}</strong>
+              <div style="font-weight:700">${formatPrice(it.price * it.qty)}</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <div style="color:var(--muted)">x ${it.qty}</div>
+              <div class="qty">
+                <button onclick="changeQty('${k}', -1)">-</button>
+                <div style="min-width:28px;text-align:center">${it.qty}</div>
+                <button onclick="changeQty('${k}', 1)">+</button>
+                <button onclick="removeItem('${k}')" style="margin-left:8px;background:transparent;border:0;color:#d23;cursor:pointer">Eliminar</button>
+              </div>
+            </div>
+          </div>
+        `;
+        cartList.appendChild(div);
+      });
+      const total = Object.values(cart).reduce((s,i)=>s + (i.price * i.qty),0);
+      subtotalEl.innerText = formatPrice(total);
+    }
+
+    function addToCartById(id){
+      const p = products.find(x=>x.id===id);
+      if(!p) return;
+      if(cart[id]) cart[id].qty += 1; else cart[id] = {...p, qty:1};
+      updateCartUI();
+      // animación pequeña
+      flashMessage(`${p.name} agregado al carrito`);
+    }
+
+    function changeQty(id, delta){
+      if(!cart[id]) return;
+      cart[id].qty += delta;
+      if(cart[id].qty <= 0) delete cart[id];
+      renderCart();
+      updateCartUI();
+    }
+    function removeItem(id){ delete cart[id]; renderCart(); updateCartUI(); }
+
+    function openCart(){ document.getElementById('cartDrawer').classList.add('open'); renderCart(); }
+    function closeCart(){ document.getElementById('cartDrawer').classList.remove('open'); }
+
+    // search
+    document.getElementById('search').addEventListener('input', (e)=> renderProducts(e.target.value));
+
+    // promo button
+    document.getElementById('promoBtn').addEventListener('click', ()=>{
+      alert('Promo: 20% de descuento en Pack limpieza express (pago en efectivo).');
+    })
+
+    // checkout
+    document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+      const keys = Object.keys(cart);
+      if(keys.length===0){ alert('El carrito está vacío. Agregá productos primero.'); return; }
+      // simulación de compra
+      const total = Object.values(cart).reduce((s,i)=>s + (i.price * i.qty),0);
+      const nombre = prompt('Ingresá tu nombre para la compra');
+      if(!nombre) return alert('Necesitamos un nombre para procesar el pedido.');
+      alert(`Gracias ${nombre}! Pedido recibido por ${formatPrice(total)}. Nos contactamos para coordinar entrega.`);
+      // vaciar carrito
+      for(const k of Object.keys(cart)) delete cart[k];
+      renderCart(); updateCartUI(); closeCart();
+    })
+
+    // util: mensaje corto
+    function flashMessage(text){
+      const el = document.createElement('div');
+      el.style.position='fixed';el.style.left='50%';el.style.transform='translateX(-50%)';el.style.bottom='30px';el.style.background='rgba(4,32,36,0.9)';el.style.color='white';el.style.padding='10px 14px';el.style.borderRadius='10px';el.style.boxShadow='0 8px 20px rgba(2,18,20,0.2)';el.style.zIndex=9999;el.innerText=text;
+      document.body.appendChild(el);
+      setTimeout(()=>{el.style.transition='opacity .4s';el.style.opacity=0;setTimeout(()=>el.remove(),400)},1400);
+    }
+
+    // inicial
+    renderProducts(); updateCartUI();
+
+  </script>
+</body>
+</html>
